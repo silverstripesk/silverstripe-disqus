@@ -1,3 +1,6 @@
 [submodule "code/thirdparty/disqus-php"]
 	path = code/thirdparty/disqus-php
 	url = git://github.com/disqus/disqus-php.git
+[submodule "disqus"]
+	path = disqus
+	url = git://github.com/silverstripesk/silverstripe-disqus.git
