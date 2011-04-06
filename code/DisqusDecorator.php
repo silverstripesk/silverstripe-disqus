@@ -1,16 +1,25 @@
 <?php
 class DisqusDecorator extends DataObjectDecorator {
+	
+	function extraStatics() {
+		return array(
+			'db' => array('cutomDisqusIdentifier' => 'Varchar(32)')
+		);
+	}
+	
+	function updateCMSFields(&$fields) {        
+        $fields->addFieldToTab("Root.Behaviour", new TextField("cutomDisqusIdentifier", "cutomDisqusIdentifier"), "ProvideComments");
+	}
+	
+	function disqusIdentifier() {
+		$config = SiteConfig::current_site_config();
+		return ($this->owner->customDisqusIdentifier) ? $this->owner->customDisqusIdentifier :  $config->disqus_prefix."_".$this->owner->ID;
+	}
 		
 	function onBeforeWrite() {
 		parent::onBeforeWrite();
 		if ($this->owner->ProvideComments) {
-			$config = SiteConfig::current_site_config();
-			$disqus = new DisqusAPI($config->disqus_secretkey);
-			if ($this->owner->id) {
-				//$disqus->threads->create(array("forum"=>$config->disqus_shortname,"identifier"=>$config->disqus_prefix."_".$this->owner->ID,"title"=>$this->owner->Title));
-			} else {
-				//$disqus->threads->create(array("forum"=>$config->disqus_shortname,"identifier"=>$config->disqus_prefix."_".$this->owner->ID,"title"=>$this->owner->Title));
-			}
+			$this->syncWithDisqusServer();
 		}
 	}
 		
@@ -21,7 +30,7 @@ class DisqusDecorator extends DataObjectDecorator {
 			$script = '
 			    var disqus_shortname = \''.$config->disqus_shortname.'\';
 				'.$dev.'
-			    var disqus_identifier = \''.$config->disqus_prefix.'_'.$this->owner->ID.'\';
+			    var disqus_identifier = \''.$this->disqusIdentifier().'\';
 			    var disqus_url = \''.$this->owner->absoluteLink().'\';
 			
 			    (function() {
@@ -31,49 +40,12 @@ class DisqusDecorator extends DataObjectDecorator {
 			    })();				
 			';
 			Requirements::customScript($script);
-				
-			$config->disqus_secretkey;
-			$disqus = new DisqusAPI($config->disqus_secretkey);
-				
-			$output = new DataObjectSet();
-			$thread = $disqus->threads->details(array("forum"=>$config->disqus_shortname,"thread"=>"ident:".$config->disqus_prefix."_".$this->owner->ID));	
-			$comments = $disqus->threads->listPosts(array("forum"=>$config->disqus_shortname,"thread"=>$thread->id));
-			//print_r($thread);
-			//print_r($comments);
 			
-			if ($comments) {
-				
-				DB::query("UPDATE DisqusComment SET `isSynced` = 0 WHERE `thread` = '$thread->id'");	
-				
-				foreach ($comments as $comment) {
-					$output->push(new ArrayData($comment));
-					
-					if ($c = DataObject::get_one('DisqusComment',"disqusId = '$comment->id'")) {
-						echo "Comment here";
-					} else {
-						$c = new DisqusComment();
-					}
-					$c->isSynced = 1;
-					$c->disqusId = $comment->id;
-					$c->author_username = $comment->author->username;
-					$c->forum = $comment->forum;
-					$c->parent = $comment->parent;
-					$c->thread = $comment->thread;
-					$c->isApproved = $comment->isApproved;
-					$c->isDeleted = $comment->isDeleted;
-					$c->isDeleted = $comment->isDeleted;
-					$c->isHighlighted = $comment->isHighlighted;
-					$c->isSpam = $comment->isSpam;
-					$c->createdAt = $comment->createdAt;
-					$c->ipAddress = $comment->ipAddress;
-					$c->message = $comment->message;
-					$c->write();
-					
-				}
-			}
-
+			$ti = $this->disqusIdentifier();
+			$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
+			
 			$templateData = array(
-				'Results' => $output
+				'LocalComments' => $results
 			); 
 				
 			return $this->owner
@@ -85,9 +57,63 @@ class DisqusDecorator extends DataObjectDecorator {
 		}
 	}
 
+	function syncWithDisqusServer() {
+				
+			$config = SiteConfig::current_site_config();
+			$config->disqus_secretkey;
+			$disqus = new DisqusAPI($config->disqus_secretkey);
+							
+			$comments = false;
+			
+			try {
+				$comments = $disqus->threads->listPosts(array("forum"=>$config->disqus_shortname,"thread"=>"ident:".$this->owner->disqusIdentifier()));
+			} catch (Exception $e) {
+			    user_error (  'Caught exception (probably cant get thread by ID, does it exists?): ' . $e->getMessage());
+			}
+						
+			if ($comments) {
+								
+				// Debug
+				//print_r($comments);
+				
+				$ti = $this->disqusIdentifier();
+				
+				DB::query("UPDATE DisqusComment SET `isSynced` = 0 WHERE `threadIdentifier` = '$ti'");
+				
+				foreach ($comments as $comment) {
+					
+					if ($c = DataObject::get_one('DisqusComment',"disqusId = '$comment->id'")) {
+						// Comment is already here, fine ;)
+					} else {
+						// Comment is new, create it
+						$c = new DisqusComment();
+					}
+					$c->isSynced = 1;
+					$c->threadIdentifier = $this->disqusIdentifier();
+					$c->disqusId = $comment->id;
+					$c->author_username = $comment->author->username;
+					$c->forum = $comment->forum;
+					$c->parent = $comment->parent;
+					$c->thread = $comment->thread;
+					$c->isApproved = $comment->isApproved;
+					$c->isDeleted = $comment->isDeleted;
+					$c->isHighlighted = $comment->isHighlighted;
+					$c->isSpam = $comment->isSpam;
+					$c->createdAt = $comment->createdAt;
+					$c->ipAddress = $comment->ipAddress;
+					$c->message = $comment->message;
+					
+					// finaly, save it to DB
+					$c->write();
+					
+				}
+			}
+				
+	}
+
 	function disqusCountLink() {
 		$config = SiteConfig::current_site_config();
-		return '<a href="'.$this->owner->absoluteLink().'#disqus_thread" title="'.$this->owner->Title.'" data-disqus-identifier="'.$config->disqus_prefix.'_'.$this->owner->ID.'">Komentáre</a>';
+		return '<a href="'.$this->owner->absoluteLink().'#disqus_thread" title="'.$this->owner->Title.'" data-disqus-identifier="'.$this->disqusIdentifier().'">Komentáre</a>';
 	}
 }
 
@@ -134,9 +160,19 @@ class DisqusCountExtension extends Extension {
 				
 }
 
+class DisqusExtension extends Extension {
+			
+		static $allowed_actions = array("syncWithDisqusServer");
+			
+		
+	
+}
+
+
 class DisqusComment extends DataObject {
 	static $db = array(
 		"isSynced" => "Boolean",
+		"threadIdentifier" => "Varchar(32)",
 		"forum" => "Varchar",
 		"disqusId" => "Int",
 		"parent" => "Int",
@@ -151,6 +187,7 @@ class DisqusComment extends DataObject {
 		"ipAddress" => "Varchar(32)",
 		"message" => "HTMLText"
 	);
+	
 }
 
 class DisqusTask extends HourlyTask {

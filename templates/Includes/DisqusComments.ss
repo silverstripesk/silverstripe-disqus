@@ -1,8 +1,8 @@
 <div id="disqus_thread">
 	<noscript>
-		<% control Results %>
+		<% control LocalComments %>
 			<div>
-				<h3>$author.username</h3>: 
+				<h3>$author_username</h3>: 
 				$message
 			</div>
 		<% end_control %>
