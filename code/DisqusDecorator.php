@@ -11,17 +11,31 @@ class DisqusDecorator extends DataObjectDecorator {
         $fields->addFieldToTab("Root.Behaviour", new TextField("cutomDisqusIdentifier", "cutomDisqusIdentifier"), "ProvideComments");
 	}
 	
+	function updateCMSActions(&$actions) {
+		// added button for syncing comments with Disqus server manualy...
+		
+		if ($this->owner->ProvideComments) {
+			$Action = new FormAction(
+	           "syncCommentsAction",
+	           _t("Disqus.SYNCCOMMENTSBUTTON", "Sync Disqus Comments")
+	        );
+	    	$actions->push($Action);
+		}
+	}
+			
 	function disqusIdentifier() {
 		$config = SiteConfig::current_site_config();
 		return ($this->owner->customDisqusIdentifier) ? $this->owner->customDisqusIdentifier :  $config->disqus_prefix."_".$this->owner->ID;
 	}
-		
+	
+	/* Dont use it. There is special button for manual syncing + cron job...	
 	function onBeforeWrite() {
 		parent::onBeforeWrite();
 		if ($this->owner->ProvideComments) {
 			$this->syncWithDisqusServer();
 		}
 	}
+	 * */
 		
 	function DisqusPageComments() {
 		$dev = (Director::isLive()) ? NULL : "var disqus_developer = 1;";
@@ -160,15 +174,6 @@ class DisqusCountExtension extends Extension {
 				
 }
 
-class DisqusExtension extends Extension {
-			
-		static $allowed_actions = array("syncWithDisqusServer");
-			
-		
-	
-}
-
-
 class DisqusComment extends DataObject {
 	static $db = array(
 		"isSynced" => "Boolean",
@@ -188,6 +193,19 @@ class DisqusComment extends DataObject {
 		"message" => "HTMLText"
 	);
 	
+}
+
+class DisqusCMSActionDecorator extends LeftAndMainDecorator {
+     
+    function syncCommentsAction() {	
+    	    	
+    	$id = (int)$_REQUEST['ID']; 
+    	$page = DataObject::get_by_id("Page",$id);
+    	$page->syncWithDisqusServer();
+    		
+        FormResponse::status_message(sprintf('All good!'),'good');
+        return FormResponse::respond();
+    }  
 }
 
 class DisqusTask extends HourlyTask {
