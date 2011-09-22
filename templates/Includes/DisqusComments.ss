@@ -1,16 +1,18 @@
-<div id="disqus_local">
-		<h2><% _t("Disqus.COMMENTSHEADING-JSOFF","Comments") %></h2>
-		<% if LocalComments %>
-			<% control LocalComments %>
-				<div class="disqus_comment_local">
-					<h3>{$author_name}:</h3>
-					<div>$message</div>
-				</div>
-			<% end_control %>
-		<% else %>
-			<p><% _t("Disqus.NOCOMMENTS-JSOFF","No comments on this article.") %></p>
-		<% end_if %>
-</div>
+<% if SyncDisqus %>
+	<div id="disqus_local">
+			<h2><% _t("Disqus.COMMENTSHEADING-JSOFF","Comments") %></h2>
+			<% if LocalComments %>
+				<% control LocalComments %>
+					<div class="disqus_comment_local">
+						<h3>{$author_name}:</h3>
+						<div>$message</div>
+					</div>
+				<% end_control %>
+			<% else %>
+				<p><% _t("Disqus.NOCOMMENTS-JSOFF","No comments on this article.") %></p>
+			<% end_if %>
+	</div>
+<% end_if %>
 <div id="disqus_thread">
 
 </div>

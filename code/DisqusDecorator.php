@@ -64,7 +64,9 @@ class DisqusDecorator extends DataObjectDecorator {
 			';
 			Requirements::customScript($script);
 			
-			$templateData = array();
+			$templateData = array(
+				'SyncDisqus' => SYNCDISQUS
+			);
 			
 			if (SYNCDISQUS) {
 				// Hide Local Comments -> we will use Disqus service
@@ -80,9 +82,7 @@ class DisqusDecorator extends DataObjectDecorator {
 				$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
 				
 				// Prepare data for template
-				$templateData = array(
-					'LocalComments' => $results
-				); 
+				$templateData['LocalComments'] = $results; 
 				
 				// Sync comments
 				$now = time();
