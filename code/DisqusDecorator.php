@@ -40,8 +40,12 @@ class DisqusDecorator extends DataObjectDecorator {
 		return ($this->owner->customDisqusIdentifier) ? $this->owner->customDisqusIdentifier :  $config->disqus_prefix."_".$this->owner->ID;
 	}
 			
-	function DisqusPageComments() {
+	function DisqusPageComments() {		
 		$dev = (Director::isLive()) ? NULL : "var disqus_developer = 1;";
+		$loc = 	explode("_",$this->owner->Locale);	
+		$disqusLocale = ($loc[1]) 
+			? 'var disqus_config = function () { this.language = "'.$loc[0].'";	};' 
+			: NULL;
 		$config = SiteConfig::current_site_config();
 		$ti = $this->disqusIdentifier();
 		if ($config->disqus_shortname && $this->owner->ProvideComments) {
@@ -50,7 +54,8 @@ class DisqusDecorator extends DataObjectDecorator {
 				'.$dev.'
 			    var disqus_identifier = \''.$ti.'\';
 			    var disqus_url = \''.$this->owner->absoluteLink().'\';
-			
+				'.$disqusLocale.'
+				
 			    (function() {
 			        var dsq = document.createElement(\'script\'); dsq.type = \'text/javascript\'; dsq.async = true;
 			        dsq.src = \'http://\' + disqus_shortname + \'.disqus.com/embed.js\';
@@ -59,13 +64,27 @@ class DisqusDecorator extends DataObjectDecorator {
 			';
 			Requirements::customScript($script);
 			
-			$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
-			
-			$templateData = array(
-				'LocalComments' => $results
-			); 
+			$templateData = array();
 			
 			if (SYNCDISQUS) {
+				// Hide Local Comments -> we will use Disqus service
+				$hideLocal = "
+					function hideLocalComments() {
+						document.getElementById('disqus_local').style.display = 'none';
+					}
+					window.onload = hideLocalComments;
+				";
+				Requirements::customScript($hideLocal);
+				
+				// Get comments 
+				$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
+				
+				// Prepare data for template
+				$templateData = array(
+					'LocalComments' => $results
+				); 
+				
+				// Sync comments
 				$now = time();
 				$synced = strtotime($this->owner->LastEdited);
 				if (($now - $synced) > $config->disqus_synctime) {

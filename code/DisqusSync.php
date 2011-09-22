@@ -13,18 +13,17 @@ class DisqusSync {
 	
 	function sync($threadID, $returnmessage = false) {
 		
-		if (SYNCDISQUS) {
-			$message = "no comments on disqus server";
-			$comments = false;
-				
-			$config = SiteConfig::current_site_config();
-			$config->disqus_secretkey;
-			if (SYNCDISQUS) {				
+			if (SYNCDISQUS) {
+				$message = "no comments on disqus server";
+				$comments = false;
+					
+				$config = SiteConfig::current_site_config();
+				$config->disqus_secretkey;		
 				$disqus = new DisqusAPI($config->disqus_secretkey);
 				try {
 					$comments = $disqus->threads->listPosts(array("forum"=>$config->disqus_shortname,"thread"=>"ident:".$threadID));
 				} catch (Exception $e) {
-			    	user_error (  'Caught exception (probably cant get thread by ID, does it exists?): ' . $e->getMessage());
+			    	//user_error (  'Caught exception (probably cant get thread by ID, does it exists?): ' . $e->getMessage());
 				}
 				
 				if ($comments) {
@@ -48,10 +47,11 @@ class DisqusSync {
 							$c = new DisqusComment();
 							$message .= " | adding comment id ".$comment->id;
 						}
+						//print_r($comment);
 						$c->isSynced = 1;
 						$c->threadIdentifier = $threadID;
 						$c->disqusId = $comment->id;
-						$c->author_username = $comment->author->username;
+						$c->author_name = $comment->author->name;
 						$c->forum = $comment->forum;
 						$c->parent = $comment->parent;
 						$c->thread = $comment->thread;
@@ -68,13 +68,9 @@ class DisqusSync {
 						
 					}
 					
-					if ($returnmessage) {
-						return $message;
-					}
-				} else {
-					if ($returnmessage) {
-						echo "no comments!";
-					}
+				} 
+				if ($returnmessage) {
+					return $message;
 				}
 			} else {
 				if ($returnmessage) {
@@ -83,6 +79,5 @@ class DisqusSync {
 			}
 		}
 	}
-}
 
 //EOF

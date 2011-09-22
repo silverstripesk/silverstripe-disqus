@@ -44,12 +44,14 @@ class DisqusSiteConfig extends DataObjectDecorator{
      * Adds a button the Site Config page of the CMS to sync all disqus comments.
      */
     public function updateCMSActions(&$actions) {
-        $actions->push(
-            new InlineFormAction(
-                'syncAllCommentsAction',
-                _t('Disqus.syncAllCommentsActionButton', 'Sync all Disqus comments')
-            )
-        );
+    	if (SYNCDISQUS) {
+	        $actions->push(
+	            new InlineFormAction(
+	                'syncAllCommentsAction',
+	                _t('Disqus.syncAllCommentsActionButton', 'Sync all Disqus comments')
+	            )
+	        );
+		}
     }
 }
 

@@ -22,7 +22,7 @@ class DisqusComment extends DataObject {
 		"isFlagged" => "Boolean",
 		"isHighlighted" => "Boolean",
 		"isSpam" => "Boolean",
-		"author_username" => "Varchar",
+		"author_name" => "Varchar",
 		"createdAt" => "Datetime",
 		"ipAddress" => "Varchar(32)",
 		"message" => "HTMLText"
