@@ -39,22 +39,28 @@ class DisqusDecorator extends DataObjectDecorator {
 		$config = SiteConfig::current_site_config();
 		return ($this->owner->customDisqusIdentifier) ? $this->owner->customDisqusIdentifier :  $config->disqus_prefix."_".$this->owner->ID;
 	}
-			
-	function DisqusPageComments() {		
-		$dev = (Director::isLive()) ? NULL : "var disqus_developer = 1;";
+	
+	function disqusLocaleJsVar() {
 		$loc = 	explode("_",$this->owner->Locale);	
-		$disqusLocale = ($loc[1]) 
+		return ($loc[1]) 
 			? 'var disqus_config = function () { this.language = "'.$loc[0].'";	};' 
 			: NULL;
+	}
+
+	function disqusDeveloperJsVar() {
+			return (Director::isLive()) ? NULL : "var disqus_developer = 1;";
+	}
+			
+	function DisqusPageComments() {		
 		$config = SiteConfig::current_site_config();
 		$ti = $this->disqusIdentifier();
 		if ($config->disqus_shortname && $this->owner->ProvideComments) {
 			$script = '
 			    var disqus_shortname = \''.$config->disqus_shortname.'\';
-				'.$dev.'
+				'.$this->owner->disqusDeveloperJsVar().'
 			    var disqus_identifier = \''.$ti.'\';
 			    var disqus_url = \''.$this->owner->absoluteLink().'\';
-				'.$disqusLocale.'
+				'.$this->owner->disqusLocaleJsVar().'
 				
 			    (function() {
 			        var dsq = document.createElement(\'script\'); dsq.type = \'text/javascript\'; dsq.async = true;
@@ -124,30 +130,13 @@ class DisqusDecorator extends DataObjectDecorator {
 
 	function disqusCountLink() {
 		$config = SiteConfig::current_site_config();
-		return '<a href="'.$this->owner->absoluteLink().'#disqus_thread" title="'.$this->owner->Title.'" data-disqus-identifier="'.$this->disqusIdentifier().'">Komentáre</a>';
-	}
-}
 
-
-class DisqusCountExtension extends Extension {
-			
-	function onAfterInit() {
-		$config = SiteConfig::current_site_config();
 		if ($config->disqus_shortname) {
-			$script = "
-		    var disqus_shortname = '".$config->disqus_shortname."'; // required: replace example with your forum shortname
+			DisqusCount::addCountJS($config->disqus_shortname, $this->owner->disqusLocaleJsVar().$this->owner->disqusDeveloperJsVar());
+		}	
 		
-		    (function () {
-		        var s = document.createElement('script'); s.async = true;
-		        s.type = 'text/javascript';
-		        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-		        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-		    }());
-		    ";
-			(Director::isLive()) ? Requirements::customScript($script) : false;
-		}
+		return '<a href="'.$this->owner->absoluteLink().'#disqus_thread" title="'.$this->owner->Title.'" data-disqus-identifier="'.$this->disqusIdentifier().'">'._t("Disqus.COMMENTS","Comments").'</a>';
 	}
-					
 }
 
 //EOF
