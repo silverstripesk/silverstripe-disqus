@@ -26,8 +26,3 @@ Object::add_extension('CMSMain', 'DisqusCMSActionDecorator');
 
 Director::addRules(50, array('disqussync/$Action/$ID/$Name' => 'Disqus_Controller'));
 
-// Add this to mysite/_config.php to suit your needs -> should be only there, 
-// where list of articles is shown and comments count is presented
-//Object::add_extension('BlogEntry_Controller','DisqusCountExtension');
-//Object::add_extension('BlogHolder_Controller','DisqusCountExtension');
-
