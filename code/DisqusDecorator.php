@@ -135,7 +135,7 @@ class DisqusDecorator extends DataObjectDecorator {
 			DisqusCount::addCountJS($config->disqus_shortname, $this->owner->disqusLocaleJsVar().$this->owner->disqusDeveloperJsVar());
 		}	
 		
-		return '<a href="'.$this->owner->absoluteLink().'#disqus_thread" title="'.$this->owner->Title.'" data-disqus-identifier="'.$this->disqusIdentifier().'">'._t("Disqus.COMMENTS","Comments").'</a>';
+		return _t("Disqus.COMMENTS","Comments").' : <a href="'.$this->owner->absoluteLink().'#disqus_thread" title="'.$this->owner->Title.'" data-disqus-identifier="'.$this->disqusIdentifier().'">'._t("Disqus.COMMENTS","Comments").'</a>';
 	}
 }
 
