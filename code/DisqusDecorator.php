@@ -41,7 +41,8 @@ class DisqusDecorator extends DataObjectDecorator {
 	}
 	
 	function disqusLocaleJsVar() {
-		$loc = 	explode("_",$this->owner->Locale);	
+		$l = (isset($this->owner->Locale)) ? $this->owner->Locale : i18n::get_locale();
+		$loc = 	explode("_",$l);	
 		return ($loc[1]) 
 			? 'var disqus_config = function () { this.language = "'.$loc[0].'";	};' 
 			: NULL;
