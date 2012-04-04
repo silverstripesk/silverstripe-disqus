@@ -1,13 +1,13 @@
 <?php
 
 // Disqus
-$lang['en_US']['Disqus']['COMMENTSHEADING-JSOFF'] = 
+$lang['ru_RU']['Disqus']['COMMENTSHEADING-JSOFF'] = 
 	'Comments';
-$lang['en_US']['Disqus']['NOCOMMENTS-JSOFF'] = 
+$lang['ru_RU']['Disqus']['NOCOMMENTS-JSOFF'] = 
 	'No comments on this article.';
-$lang['en_US']['Disqus']['SYNCCOMMENTSBUTTON'] = 
+$lang['ru_RU']['Disqus']['SYNCCOMMENTSBUTTON'] = 
 	'Sync Disqus Comments';
-$lang['en_US']['Disqus']['COMMENTS'] = 
-	'Комментарии';
-$lang['en_US']['Disqus']['syncAllCommentsActionButton'] = 
+$lang['ru_RU']['Disqus']['COMMENTS'] = 
+	'Комментарии: ';
+$lang['ru_RU']['Disqus']['syncAllCommentsActionButton'] = 
 	'Sync all Disqus comments';

@@ -8,6 +8,6 @@ $lang['en_US']['Disqus']['NOCOMMENTS-JSOFF'] =
 $lang['en_US']['Disqus']['SYNCCOMMENTSBUTTON'] = 
 	'Sync Disqus Comments';
 $lang['en_US']['Disqus']['COMMENTS'] = 
-	'Comments';
+	'Comments: ';
 $lang['en_US']['Disqus']['syncAllCommentsActionButton'] = 
 	'Sync all Disqus comments';
