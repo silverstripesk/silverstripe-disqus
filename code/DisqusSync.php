@@ -11,20 +11,28 @@
 
 class DisqusSync {
 	
-	function sync($threadID, $returnmessage = false) {
+	static function sync($threadID, $returnmessage = false) {
 		
 			if (SYNCDISQUS) {
 				$message = "no comments on disqus server";
 				$comments = false;
 					
 				$config = SiteConfig::current_site_config();
-				$config->disqus_secretkey;		
+				$config->disqus_secretkey;
+								
 				$disqus = new DisqusAPI($config->disqus_secretkey);
+				
+				
+				
 				try {
 					$comments = $disqus->threads->listPosts(array("forum"=>$config->disqus_shortname,"thread"=>"ident:".$threadID));
+					
 				} catch (Exception $e) {
-			    	//user_error (  'Caught exception (probably cant get thread by ID, does it exists?): ' . $e->getMessage());
+			    	user_error (  'Caught exception (probably cant get thread by ID, does it exists?): ' . $e->getMessage());
 				}
+				
+				
+				
 				
 				if ($comments) {
 					
@@ -32,14 +40,15 @@ class DisqusSync {
 									
 					// Debug
 					if ($returnmessage) {
-						print_r($comments);
+						//print_r($comments);
 					}
 					
 					DB::query("UPDATE DisqusComment SET `isSynced` = 0 WHERE `threadIdentifier` = '$threadID'");
 					
 					foreach ($comments as $comment) {
 						
-						if ($c = DataObject::get_one('DisqusComment',"disqusId = '$comment->id'")) {
+						//if ($c = DataObject::get_one('DisqusComment',"disqusId = '$comment->id'")) {
+						if ( $c = DisqusComment::get()->filter('disqusId',$comment->id)->First() ){
 							// Comment is already here, fine ;)
 							$message .= " | updating comment id ".$comment->id;
 						} else {
@@ -47,7 +56,7 @@ class DisqusSync {
 							$c = new DisqusComment();
 							$message .= " | adding comment id ".$comment->id;
 						}
-						//print_r($comment);
+						
 						$c->isSynced = 1;
 						$c->threadIdentifier = $threadID;
 						$c->disqusId = $comment->id;
@@ -60,17 +69,18 @@ class DisqusSync {
 						$c->isHighlighted = $comment->isHighlighted;
 						$c->isSpam = $comment->isSpam;
 						$c->createdAt = $comment->createdAt;
-						$c->ipAddress = $comment->ipAddress;
+						//$c->ipAddress = $comment->ipAddress;
 						$c->message = $comment->message;
-						
+												
 						// finaly, save it to DB
 						$c->write();
-						
-					}
+											}
 					
 				} 
 				if ($returnmessage) {
+
 					return $message;
+					
 				}
 			} else {
 				if ($returnmessage) {

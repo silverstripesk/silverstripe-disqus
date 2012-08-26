@@ -9,21 +9,23 @@
  * @date April 2011
  */
 
-class DisqusDecorator extends DataObjectDecorator {
+class DisqusDecorator extends DataExtension {
 	
-	function extraStatics() {
-		return array(
-			'db' => array(
+	static $db = array(
 				'cutomDisqusIdentifier' => 'Varchar(32)'
-				)
-		);
+				);
+		
+	
+	public function updateSettingsFields(FieldList $fields) {
+		
+		$fields->addFieldToTab('Root.Settings', new TextField("cutomDisqusIdentifier", "cutomDisqusIdentifier"),"ProvideComments");
+		
 	}
 	
-	function updateCMSFields(&$fields) {        
-        $fields->addFieldToTab("Root.Behaviour", new TextField("cutomDisqusIdentifier", "cutomDisqusIdentifier"), "ProvideComments");
-	}
+
 	
-	function updateCMSActions(&$actions) {
+	
+	function updateCMSActions(FieldList $actions) {
 		// added button for syncing comments with Disqus server manualy...
 		
 		if ($this->owner->ProvideComments && SYNCDISQUS) {
@@ -86,7 +88,12 @@ class DisqusDecorator extends DataObjectDecorator {
 				Requirements::customScript($hideLocal);
 				
 				// Get comments 
-				$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
+				//$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
+				$results = DisqusComment::get()->filter(array(
+					'isSynced'=>'1',
+					'isApproved'=>'1',
+					'threadIdentifier'=>$ti
+				));
 				
 				// Prepare data for template
 				$templateData['LocalComments'] = $results; 

@@ -1,0 +1,9 @@
+---
+Name: disqussync
+After: framework/routes#coreroutes
+---
+Director:
+  rules:
+    'disqussync/$Action/$ID/$Name': 'Disqus_Controller'
+    
+   

@@ -9,7 +9,7 @@
  * @date April 2011
  */
 
-class DisqusCMSActionDecorator extends LeftAndMainDecorator {
+class DisqusCMSActionDecorator extends LeftAndMainExtension {
 	
 	public static $allowed_actions = array(
         'syncAllCommentsAction'
@@ -18,7 +18,9 @@ class DisqusCMSActionDecorator extends LeftAndMainDecorator {
     function syncCommentsAction() {	
     	    	
     	$id = (int)$_REQUEST['ID']; 
-    	$page = DataObject::get_by_id("Page",$id);
+    	
+    	//$page = DataObject::get_by_id("Page",$id);
+    	$page = Page::get()->byID($id);
 
 		DisqusSync::sync($page->disqusIdentifier());
     		
@@ -28,7 +30,13 @@ class DisqusCMSActionDecorator extends LeftAndMainDecorator {
 	
 	function syncAllCommentsAction() {	
     	    	
-    	$pages = DataObject::get("Page","provideComments = 1 AND status = 'Published'");
+    	//$pages = DataObject::get("Page","provideComments = 1 AND status = 'Published'"); 
+    	// @todo status noo longer works, need alternative way to denote a page being published
+    	$pages = Page::get()->filter(array(
+    		'ProvideComments'=>'1'
+    	));
+    	
+    	
 		if ($pages) {
 			foreach ($pages as $page) {
 				// TODO: this doesnt work too (sameas HourlyTask). What's the reason?

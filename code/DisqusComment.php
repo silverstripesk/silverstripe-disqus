@@ -24,7 +24,7 @@ class DisqusComment extends DataObject {
 		"isSpam" => "Boolean",
 		"author_name" => "Varchar",
 		"createdAt" => "Datetime",
-		"ipAddress" => "Varchar(32)",
+		//"ipAddress" => "Varchar(32)", - API no longer returns IP address via publick secret key
 		"message" => "HTMLText"
 	);
 	

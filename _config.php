@@ -23,6 +23,3 @@ if (PHP_VERSION_ID < 50300) {
 Object::add_extension('Page','DisqusDecorator');
 Object::add_extension('SiteConfig','DisqusSiteConfig');
 Object::add_extension('CMSMain', 'DisqusCMSActionDecorator');
-
-Director::addRules(50, array('disqussync/$Action/$ID/$Name' => 'Disqus_Controller'));
-
