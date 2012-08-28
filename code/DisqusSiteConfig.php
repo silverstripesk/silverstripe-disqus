@@ -9,22 +9,18 @@
  * @date April 2011
  */
 
-class DisqusSiteConfig extends DataObjectDecorator{
+class DisqusSiteConfig extends DataExtension{
 // add database fields
-  function extraStatics() {
-    return array(
-      'db' => array(
+	static $db = array(
         'disqus_shortname' => 'Varchar',
         'disqus_secretkey' => 'Varchar(64)',
         'disqus_prefix' => 'Varchar',
         'disqus_synctime' => 'Int',
         'disqus_syncinbg' => 'Boolean'
-      )
     );
-  }
 
   // Create CMS fields
-  public function updateCMSFields(&$fields) {
+  public function updateCMSFields(FieldList $fields) {
     $fields->addFieldToTab("Root.Disqus",new TextField("disqus_shortname", "Disqus shortname"));
 	$fields->addFieldToTab("Root.Disqus",new TextField("disqus_secretkey", "Disqus secret key"));
 	$fields->addFieldToTab("Root.Disqus",new TextField("disqus_prefix", "Disqus prefix"));
@@ -43,16 +39,14 @@ class DisqusSiteConfig extends DataObjectDecorator{
       /**
      * Adds a button the Site Config page of the CMS to sync all disqus comments.
      */
-    public function updateCMSActions(&$actions) {
+    public function updateCMSActions(FieldList $actions) {
     	if (SYNCDISQUS) {
-	        $actions->push(
-	            new InlineFormAction(
-	                'syncAllCommentsAction',
-	                _t('Disqus.syncAllCommentsActionButton', 'Sync all Disqus comments')
-	            )
-	        );
+    		//@todo work out why this throws an error.
+	        //$actions->push( new InlineFormAction('syncAllCommentsAction', _t('Disqus.syncAllCommentsActionButton', 'Sync all Disqus comments') ) );
 		}
     }
+    
+    
+    
+    
 }
-
-// EOF

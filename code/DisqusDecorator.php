@@ -9,21 +9,30 @@
  * @date April 2011
  */
 
-class DisqusDecorator extends DataObjectDecorator {
+class DisqusDecorator extends DataExtension {
 	
-	function extraStatics() {
-		return array(
-			'db' => array(
-				'cutomDisqusIdentifier' => 'Varchar(32)'
-				)
-		);
+	function extraStatics($class = null, $extension = null) {
+		$fields = array(
+					'db' => array(
+						'customDisqusIdentifier' => 'Varchar(32)'
+					)
+				);
+				
+				
+				return $fields;
+				}
+		
+	
+	public function updateSettingsFields(FieldList $fields) {
+		
+		$fields->addFieldToTab('Root.Settings', new TextField("customDisqusIdentifier", "customDisqusIdentifier"),"ProvideComments");
+		
 	}
 	
-	function updateCMSFields(&$fields) {        
-        $fields->addFieldToTab("Root.Behaviour", new TextField("cutomDisqusIdentifier", "cutomDisqusIdentifier"), "ProvideComments");
-	}
+
 	
-	function updateCMSActions(&$actions) {
+	
+	function updateCMSActions(FieldList $actions) {
 		// added button for syncing comments with Disqus server manualy...
 		
 		if ($this->owner->ProvideComments && SYNCDISQUS) {
@@ -86,7 +95,12 @@ class DisqusDecorator extends DataObjectDecorator {
 				Requirements::customScript($hideLocal);
 				
 				// Get comments 
-				$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
+				//$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
+				$results = DisqusComment::get()->filter(array(
+					'isSynced'=>'1',
+					'isApproved'=>'1',
+					'threadIdentifier'=>$ti
+				));
 				
 				// Prepare data for template
 				$templateData['LocalComments'] = $results; 
@@ -136,7 +150,7 @@ class DisqusDecorator extends DataObjectDecorator {
 			DisqusCount::addCountJS($config->disqus_shortname, $this->owner->disqusLocaleJsVar().$this->owner->disqusDeveloperJsVar());
 		}	
 		
-		return _t("Disqus.COMMENTS","Comments").'<a href="'.$this->owner->absoluteLink().'#disqus_thread" title="'.$this->owner->Title.'" data-disqus-identifier="'.$this->disqusIdentifier().'">'._t("Disqus.COMMENTS","Comments").'</a>';
+		return '<a href="'.$this->owner->absoluteLink().'#disqus_thread" title="'.$this->owner->Title.'" data-disqus-identifier="'.$this->disqusIdentifier().'">'._t("Disqus.COMMENTS","Comments").'</a>';
 	}
 }
 

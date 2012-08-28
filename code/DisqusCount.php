@@ -13,7 +13,7 @@ class DisqusCount  {
 			
 	protected static $addCountJS = true;
 	
-	public function addCountJS($shortname,$extraVars = NULL) {
+	public static function addCountJS($shortname,$extraVars = NULL) {
 			if (self::$addCountJS) {
 				$script = "
 			    var disqus_shortname = '".$shortname."'; // required: replace example with your forum shortname
