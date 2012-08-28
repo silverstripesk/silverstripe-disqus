@@ -11,7 +11,7 @@
 
 class DisqusDecorator extends DataExtension {
 	
-	public function extraStatics() {
+	function extraStatics($class = null, $extension = null) {
 		$fields = array(
 					'db' => array(
 						'customDisqusIdentifier' => 'Varchar(32)'
