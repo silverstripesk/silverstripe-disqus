@@ -28,7 +28,7 @@ class DisqusSync {
 					$comments = $disqus->threads->listPosts(array("forum"=>$config->disqus_shortname,"thread"=>"ident:".$threadID));
 					
 				} catch (Exception $e) {
-			    	user_error (  'Caught exception (probably cant get thread by ID, does it exists?): ' . $e->getMessage());
+			    	//user_error (  'Caught exception (probably cant get thread by ID, does it exists?): ' . $e->getMessage());
 				}
 				
 				

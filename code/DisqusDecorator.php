@@ -11,14 +11,21 @@
 
 class DisqusDecorator extends DataExtension {
 	
-	static $db = array(
-				'cutomDisqusIdentifier' => 'Varchar(32)'
+	public function extraStatics() {
+		$fields = array(
+					'db' => array(
+						'customDisqusIdentifier' => 'Varchar(32)'
+					)
 				);
+				
+				
+				return $fields;
+				}
 		
 	
 	public function updateSettingsFields(FieldList $fields) {
 		
-		$fields->addFieldToTab('Root.Settings', new TextField("cutomDisqusIdentifier", "cutomDisqusIdentifier"),"ProvideComments");
+		$fields->addFieldToTab('Root.Settings', new TextField("customDisqusIdentifier", "customDisqusIdentifier"),"ProvideComments");
 		
 	}
 	
