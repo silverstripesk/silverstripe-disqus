@@ -10,7 +10,7 @@
  */
 
 class DisqusComment extends DataObject {
-	static $db = array(
+	private static $db = array(
 		"isSynced" => "Boolean",
 		"threadIdentifier" => "Varchar(32)",
 		"forum" => "Varchar",

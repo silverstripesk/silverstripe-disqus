@@ -11,7 +11,7 @@
 
 class DisqusSiteConfig extends DataExtension{
 // add database fields
-	static $db = array(
+	private static $db = array(
         'disqus_shortname' => 'Varchar',
         'disqus_secretkey' => 'Varchar(64)',
         'disqus_prefix' => 'Varchar',

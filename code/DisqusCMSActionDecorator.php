@@ -11,7 +11,7 @@
 
 class DisqusCMSActionDecorator extends LeftAndMainExtension {
 	
-	public static $allowed_actions = array(
+	private static $allowed_actions = array(
         'syncAllCommentsAction'
     );
      
