@@ -24,8 +24,8 @@ class DisqusCMSActionDecorator extends LeftAndMainExtension {
 
 		DisqusSync::sync($page->disqusIdentifier());
     		
-        FormResponse::status_message(sprintf('Synced successfuly'),'good');
-        return FormResponse::respond();
+        $this->owner->response->addHeader('X-Status', sprintf('Synced successfuly'));
+        return;
     }  
 	
 	function syncAllCommentsAction() {	
@@ -44,8 +44,8 @@ class DisqusCMSActionDecorator extends LeftAndMainExtension {
 			}
 		}
     		
-        FormResponse::status_message(sprintf('Synced successfuly'),'good');
-        return FormResponse::respond();
+        $this->owner->response->addHeader('X-Status', sprintf('Synced successfuly'));
+        return;
     }  
 }
 
