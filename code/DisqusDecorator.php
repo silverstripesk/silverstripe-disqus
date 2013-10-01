@@ -53,6 +53,10 @@ class DisqusDecorator extends DataObjectDecorator {
 	}
 			
 	function DisqusPageComments() {		
+		// if the owner DataObject is Versioned, don't display DISQUS until the post is published
+		// to avoid identifier / URL conflicts.
+		if( $this->owner->hasExtension('Versioned') && Versioned::current_stage() == 'Stage') return;
+
 		$config = SiteConfig::current_site_config();
 		$ti = $this->disqusIdentifier();
 		if ($config->disqus_shortname && $this->owner->ProvideComments) {
