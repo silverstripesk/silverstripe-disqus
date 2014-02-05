@@ -16,5 +16,5 @@
 <div id="disqus_thread">
 
 </div>
-<noscript>Povoľte si javascript, ak chcete pridať príspevok do diskusie alebo nám napíšte e-mail ;)</noscript>
-<p><a href="http://disqus.com" class="dsq-brlink">komentárový systém: <span class="logo-disqus">Disqus</span></a></p>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<p><a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a></p>
