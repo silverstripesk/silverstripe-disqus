@@ -70,7 +70,7 @@ class DisqusDecorator extends DataExtension {
 				
 			    (function() {
 			        var dsq = document.createElement(\'script\'); dsq.type = \'text/javascript\'; dsq.async = true;
-			        dsq.src = \'http://\' + disqus_shortname + \'.disqus.com/embed.js\';
+			        dsq.src = \'https://\' + disqus_shortname + \'.disqus.com/embed.js\';
 			        (document.getElementsByTagName(\'head\')[0] || document.getElementsByTagName(\'body\')[0]).appendChild(dsq);
 			    })();				
 			';
@@ -107,7 +107,7 @@ class DisqusDecorator extends DataExtension {
 				if (($now - $synced) > $config->disqus_synctime) {
 					if ($config->disqus_syncinbg) {
 						// background process
-						// from here: http://stackoverflow.com/questions/1993036/run-function-in-background
+						// from here: https://stackoverflow.com/questions/1993036/run-function-in-background
 					    // TODO: Windows check is not fully correct
 					    // Debug
 					    // echo "trying to sync in BG";
