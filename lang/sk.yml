@@ -1,0 +1,8 @@
+sk:
+  Disqus:
+    COMMENTSHEADING-JSOFF: 'Komentáre'
+    NOCOMMENTS-JSOFF: 'Tento článok neobsahuje komentáre.'
+    SYNCCOMMENTSBUTTON: 'Sync Disqus Comments'
+    COMMENTS: 'Komentáre'
+    CUSTOMDISQUSIDENTIFIER: 'Vlastný Disqus identifikátor'
+    NOTLIVEALERT: 'Disqus komentáre sa zobrazia po odhlásení alebo po prepnuti do Live módu!'

@@ -1,0 +1,8 @@
+en:
+  Disqus:
+    COMMENTSHEADING-JSOFF: 'Comments'
+    NOCOMMENTS-JSOFF: 'No comments on this article.'
+    SYNCCOMMENTSBUTTON: 'Sync Disqus Comments'
+    COMMENTS: 'Komentáre'
+    CUSTOMDISQUSIDENTIFIER: 'Custom Disqus identifier'
+    NOTLIVEALERT: 'Disqus comments are temporary OFF in Stage mode. Logout or turn in Live mode!'

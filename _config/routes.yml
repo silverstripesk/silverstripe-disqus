@@ -4,6 +4,6 @@ After: framework/routes#coreroutes
 ---
 Director:
   rules:
-    'disqussync/$Action/$ID/$Name': 'Disqus_Controller'
+    'disqussync//$Action/$ID/$Name': 'Disqus_Controller'
     
    

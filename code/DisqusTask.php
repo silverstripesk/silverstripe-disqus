@@ -8,7 +8,7 @@
  * @notice SilverStripe.sk is not affiliated with the company SilverStripe Ltd.
  * @date April 2011
  */
-
+/*
 class DisqusTask extends HourlyTask {
 	function process() {
 		//$pages = DataObject::get("Page","provideComments = 1 AND status = 'Published'");
@@ -34,5 +34,5 @@ class DisqusTask extends HourlyTask {
 		
 	}
 }
-
+*/
 // EOF

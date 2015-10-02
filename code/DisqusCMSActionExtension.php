@@ -9,7 +9,7 @@
  * @date April 2011
  */
 
-class DisqusCMSActionDecorator extends LeftAndMainExtension {
+class DisqusCMSActionExtension extends LeftAndMainExtension {
 	
 	private static $allowed_actions = array(
         'syncAllCommentsAction'
@@ -27,7 +27,7 @@ class DisqusCMSActionDecorator extends LeftAndMainExtension {
         $this->owner->response->addHeader('X-Status', sprintf('Synced successfuly'));
         return;
     }  
-	
+/*
 	function syncAllCommentsAction() {	
     	    	
     	//$pages = DataObject::get("Page","provideComments = 1 AND status = 'Published'"); 
@@ -46,7 +46,8 @@ class DisqusCMSActionDecorator extends LeftAndMainExtension {
     		
         $this->owner->response->addHeader('X-Status', sprintf('Synced successfuly'));
         return;
-    }  
+    }
+*/
 }
 
 // EOF

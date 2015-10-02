@@ -19,7 +19,3 @@ if (PHP_VERSION_ID < 50300) {
 } else {
 	define('SYNCDISQUS', true);
 }
-
-Page::add_extension('DisqusDecorator');
-SiteConfig::add_extension('DisqusSiteConfig');
-CMSMain::add_extension('DisqusCMSActionDecorator');

@@ -11,3 +11,5 @@ $lang['sk_SK']['Disqus']['COMMENTS'] =
 	'';
 $lang['sk_SK']['Disqus']['syncAllCommentsActionButton'] = 
 	'Sync all Disqus comments';
+$lang['en_US']['Disqus']['CUSTOMDISQUSIDENTIFIER'] =
+    'Vlastný Disqus identifikátor vlákna';

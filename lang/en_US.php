@@ -11,3 +11,5 @@ $lang['en_US']['Disqus']['COMMENTS'] =
 	'Comments: ';
 $lang['en_US']['Disqus']['syncAllCommentsActionButton'] = 
 	'Sync all Disqus comments';
+$lang['en_US']['Disqus']['CUSTOMDISQUSIDENTIFIER'] =
+    'Custom Disqus identifier';

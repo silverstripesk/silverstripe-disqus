@@ -1,3 +1,0 @@
-[submodule "code/thirdparty/disqus-php"]
-	path = code/thirdparty/disqus-php
-	url = git://github.com/disqus/disqus-php.git

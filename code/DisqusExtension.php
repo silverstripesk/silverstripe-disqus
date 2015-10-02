@@ -9,25 +9,23 @@
  * @date April 2011
  */
 
-class DisqusDecorator extends DataExtension {
+class DisqusExtension extends DataExtension {
 	
 	private static $db = array(
 		'customDisqusIdentifier' => 'Varchar(32)'
 	);
+
+    public function updateCMSFields(FieldList $fields) {
+        $fields->removeByName("Comments");
+    }
 	
 	public function updateSettingsFields(FieldList $fields) {
-		
-		$fields->addFieldToTab('Root.Settings', new TextField("customDisqusIdentifier", "customDisqusIdentifier"),"ProvideComments");
-		
+		$fields->addFieldToTab('Root.Settings', TextField::create("customDisqusIdentifier", _t("Disqus.CUSTOMDISQUSIDENTIFIER", "Custom Disqus identifier"))->setDescription("Current identifier: " . $this->owner->disqusIdentifier()));
 	}
-	
-
-	
 	
 	function updateCMSActions(FieldList $actions) {
 		// added button for syncing comments with Disqus server manualy...
-		
-		if ($this->owner->ProvideComments && SYNCDISQUS) {
+		if ($this->owner->disqusEnabled()) {
 			$Action = new FormAction(
 	           "syncCommentsAction",
 	           _t("Disqus.SYNCCOMMENTSBUTTON", "Sync Disqus Comments")
@@ -35,6 +33,15 @@ class DisqusDecorator extends DataExtension {
 	    	$actions->push($Action);
 		}
 	}
+
+    function disqusEnabled() {
+		// comments module installed? Ask Comments module if enabled
+        if ($this->owner->hasExtension('CommentsExtension')) {
+			return ($this->owner->getCommentsEnabled() && SYNCDISQUS) ? true : false;
+		}
+		// no comments module - place disqus if template asks for
+		return true;
+    }
 			
 	function disqusIdentifier() {
 		$config = SiteConfig::current_site_config();
@@ -56,11 +63,11 @@ class DisqusDecorator extends DataExtension {
 	function DisqusPageComments() {
 		// if the owner DataObject is Versioned, don't display DISQUS until the post is published
 		// to avoid identifier / URL conflicts.
-		if( $this->owner->hasExtension('Versioned') && Versioned::current_stage() == 'Stage') return;
+		if( $this->owner->hasExtension('Versioned') && Versioned::current_stage() == 'Stage') return '<p class="alert">'._t("Disqus.NOTLIVEALERT","Disqus comments are temporary OFF in Stage mode. Logout or turn in Live mode!").'</p>';
 
 		$config = SiteConfig::current_site_config();
 		$ti = $this->disqusIdentifier();
-		if ($config->disqus_shortname && $this->owner->ProvideComments) {
+		if ($config->disqus_shortname && $this->owner->disqusEnabled()) {
 			$script = '
 			    var disqus_shortname = \''.$config->disqus_shortname.'\';
 				'.$this->owner->disqusDeveloperJsVar().'
@@ -111,9 +118,9 @@ class DisqusDecorator extends DataExtension {
 					    // TODO: Windows check is not fully correct
 					    // Debug
 					    // echo "trying to sync in BG";
-					    $cmd = "php " . Director::baseFolder() . DIRECTORY_SEPARATOR . "sapphire" . DIRECTORY_SEPARATOR . "cli-script.php /disqussync/sync_by_ident/" . $ti . "/";
+					    $cmd = "php " . Director::baseFolder() . DIRECTORY_SEPARATOR . "framework" . DIRECTORY_SEPARATOR . "cli-script.php /disqussync/sync_by_ident/" . $ti . "/";
 					    // Debug
-					    // echo $cmd;
+					    //echo $cmd;
 					    if (substr(php_uname(), 0, 7) == "Windows") {
 					        pclose(popen("start /B ". $cmd, "r"));
 					    } else {

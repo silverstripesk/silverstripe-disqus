@@ -74,7 +74,8 @@ class DisqusSync {
 												
 						// finaly, save it to DB
 						$c->write();
-											}
+
+                    }
 					
 				} 
 				if ($returnmessage) {
