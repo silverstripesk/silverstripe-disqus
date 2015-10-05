@@ -37,7 +37,7 @@ class DisqusExtension extends DataExtension {
     function disqusEnabled() {
 		// comments module installed? Ask Comments module if enabled
         if ($this->owner->hasExtension('CommentsExtension')) {
-			return ($this->owner->getCommentsEnabled() && SYNCDISQUS) ? true : false;
+			return ($this->owner->getCommentsEnabled()) ? true : false;
 		}
 		// no comments module - place disqus if template asks for
 		return true;
@@ -84,60 +84,59 @@ class DisqusExtension extends DataExtension {
 			Requirements::customScript($script);
 			
 			$templateData = array(
-				'SyncDisqus' => SYNCDISQUS
+				'SyncDisqus' => true
 			);
 			
-			if (SYNCDISQUS) {
-				// Hide Local Comments -> we will use Disqus service
-				$hideLocal = "
-					function hideLocalComments() {
-						document.getElementById('disqus_local').style.display = 'none';
-					}
-					window.onload = hideLocalComments;
-				";
-				Requirements::customScript($hideLocal);
-				
-				// Get comments 
-				//$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
-				$results = DisqusComment::get()->filter(array(
-					'isSynced'=>'1',
-					'isApproved'=>'1',
-					'threadIdentifier'=>$ti
-				));
-				
-				// Prepare data for template
-				$templateData['LocalComments'] = $results; 
-				
-				// Sync comments
-				$now = time();
-				$synced = strtotime($this->owner->LastEdited);
-				if (($now - $synced) > $config->disqus_synctime) {
-					if ($config->disqus_syncinbg) {
-						// background process
-						// from here: https://stackoverflow.com/questions/1993036/run-function-in-background
-					    // TODO: Windows check is not fully correct
-					    // Debug
-					    // echo "trying to sync in BG";
-					    $cmd = "php " . Director::baseFolder() . DIRECTORY_SEPARATOR . "framework" . DIRECTORY_SEPARATOR . "cli-script.php /disqussync/sync_by_ident/" . $ti . "/";
-					    // Debug
-					    //echo $cmd;
-					    if (substr(php_uname(), 0, 7) == "Windows") {
-					        pclose(popen("start /B ". $cmd, "r"));
-					    } else {
-					        exec($cmd . " > /dev/null &");
-					    }
-					} else {
-						$returnmessage = (Director::isDev()) ? 1 : 0;
-						DisqusSync::sync($ti, $returnmessage);
-					}
-					// updates LastEdited data
-					$this->owner->write(); // saves the record
-				} else {
-					// Debug
-					// echo "not needed to sync";
-				}
 
+			// Hide Local Comments -> we will use Disqus service
+			$hideLocal = "
+				function hideLocalComments() {
+					document.getElementById('disqus_local').style.display = 'none';
+				}
+				window.onload = hideLocalComments;
+			";
+			Requirements::customScript($hideLocal);
+			
+			// Get comments 
+			//$results = DataObject::get('DisqusComment',"isSynced = 1 AND isApproved = 1 AND threadIdentifier = '$ti'");
+			$results = DisqusComment::get()->filter(array(
+				'isSynced'=>'1',
+				'isApproved'=>'1',
+				'threadIdentifier'=>$ti
+			));
+			
+			// Prepare data for template
+			$templateData['LocalComments'] = $results; 
+			
+			// Sync comments
+			$now = time();
+			$synced = strtotime($this->owner->LastEdited);
+			if (($now - $synced) > $config->disqus_synctime) {
+				if ($config->disqus_syncinbg) {
+					// background process
+					// from here: https://stackoverflow.com/questions/1993036/run-function-in-background
+				    // TODO: Windows check is not fully correct
+				    // Debug
+				    // echo "trying to sync in BG";
+				    $cmd = "php " . Director::baseFolder() . DIRECTORY_SEPARATOR . "framework" . DIRECTORY_SEPARATOR . "cli-script.php /disqussync/sync_by_ident/" . $ti . "/";
+				    // Debug
+				    //echo $cmd;
+				    if (substr(php_uname(), 0, 7) == "Windows") {
+				        pclose(popen("start /B ". $cmd, "r"));
+				    } else {
+				        exec($cmd . " > /dev/null &");
+				    }
+				} else {
+					$returnmessage = (Director::isDev()) ? 1 : 0;
+					DisqusSync::sync($ti, $returnmessage);
+				}
+				// updates LastEdited data
+				$this->owner->write(); // saves the record
+			} else {
+				// Debug
+				// echo "not needed to sync";
 			}
+
 				
 			return $this->owner
 				->customise($templateData)
