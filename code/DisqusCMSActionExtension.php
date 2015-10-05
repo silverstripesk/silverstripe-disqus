@@ -12,21 +12,19 @@
 class DisqusCMSActionExtension extends LeftAndMainExtension {
 	
 	private static $allowed_actions = array(
-        'syncAllCommentsAction'
-    );
+        	'syncAllCommentsAction'
+    	);
      
-    function syncCommentsAction() {	
+    	function syncCommentsAction() {	
     	    	
-    	$id = (int)$_REQUEST['ID']; 
-    	
-    	//$page = DataObject::get_by_id("Page",$id);
-    	$page = Page::get()->byID($id);
+    		$id = (int)$_REQUEST['ID']; 
+    		$page = Page::get()->byID($id);
 
 		DisqusSync::sync($page->disqusIdentifier());
     		
-        $this->owner->response->addHeader('X-Status', sprintf('Synced successfuly'));
-        return;
-    }  
+        	$this->owner->response->addHeader('X-Status', sprintf('Synced successfuly'));
+        	return;
+    	}  
 }
 
 // EOF

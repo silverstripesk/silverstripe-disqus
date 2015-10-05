@@ -15,9 +15,9 @@ class DisqusExtension extends DataExtension {
 		'customDisqusIdentifier' => 'Varchar(32)'
 	);
 
-    public function updateCMSFields(FieldList $fields) {
-        $fields->removeByName("Comments");
-    }
+    	public function updateCMSFields(FieldList $fields) {
+        	$fields->removeByName("Comments");
+    	}
 	
 	public function updateSettingsFields(FieldList $fields) {
 		$fields->addFieldToTab('Root.Settings', TextField::create("customDisqusIdentifier", _t("Disqus.CUSTOMDISQUSIDENTIFIER", "Custom Disqus identifier"))->setDescription("Current identifier: " . $this->owner->disqusIdentifier()));
@@ -34,14 +34,14 @@ class DisqusExtension extends DataExtension {
 		}
 	}
 
-    function disqusEnabled() {
-		// comments module installed? Ask Comments module if enabled
-        if ($this->owner->hasExtension('CommentsExtension')) {
+    	function disqusEnabled() {
+	// comments module installed? Ask Comments module if enabled
+		if ($this->owner->hasExtension('CommentsExtension')) {
 			return ($this->owner->getCommentsEnabled()) ? true : false;
 		}
 		// no comments module - place disqus if template asks for
 		return true;
-    }
+    	}
 			
 	function disqusIdentifier() {
 		$config = SiteConfig::current_site_config();

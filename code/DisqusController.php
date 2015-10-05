@@ -11,12 +11,12 @@
 
 class Disqus_Controller extends Controller {
 
-    private static $allowed_actions = array('sync_by_ident');
+    	private static $allowed_actions = array('sync_by_ident');
 
-    function sync_by_ident() {
-    	$returnmessage = (Director::is_cli() || Director::isDev()) ? 1 : 0;
-	return DisqusSync::sync($this->request->param('ID'),$returnmessage);		
-    }
+    	function sync_by_ident() {
+    		$returnmessage = (Director::is_cli() || Director::isDev()) ? 1 : 0;
+		return DisqusSync::sync($this->request->param('ID'),$returnmessage);		
+    	}
 }
 
 // EOF

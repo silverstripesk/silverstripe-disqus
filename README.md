@@ -48,9 +48,9 @@ with following code
 $DisqusPageComments
 ```
 
-if you are on some Page holder (list of pages, e.g. showing Children pages), you can show comments count by adding:
+if you are on some Page holder (list of pages), you can show comments count by adding:
 ```
-<% if ProvideComments %>$disqusCountLink<% end_if %>
+<% if disqusEnabled %>$disqusCountLink<% end_if %>
 ```
 
 ## Usage

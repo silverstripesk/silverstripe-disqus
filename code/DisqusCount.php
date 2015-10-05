@@ -14,8 +14,8 @@ class DisqusCount  {
 	protected static $addCountJS = true;
 	
 	public static function addCountJS($shortname,$extraVars = NULL) {
-			if (self::$addCountJS) {
-				$script = "
+		if (self::$addCountJS) {
+			$script = "
 			    var disqus_shortname = '".$shortname."'; // required: replace example with your forum shortname
 			    ".$extraVars."
 			
@@ -25,12 +25,12 @@ class DisqusCount  {
 			        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
 			        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
 			    }());
-			    ";
-				Requirements::customScript($script);
-				self::$addCountJS = false;
-			}
+			";
+			Requirements::customScript($script);
+			self::$addCountJS = false;
+		}
 	}
-					
+				
 }
 
 // EOF
