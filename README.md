@@ -62,3 +62,6 @@ Comments will be shown on all pagetypes activated in comments.yml
 
 ## Collaboration
 If you want to help out and make some improvements please fork this project and submit a pull request (see this guide on how to do this:  [Pull requests](http://help.github.com/pull-requests/)). 
+
+## TODO
+If silverstripe/comments module installed: sync both to have same comments on both sides
