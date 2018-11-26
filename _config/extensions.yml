@@ -1,9 +1,9 @@
 ---
 Name: disqus-extensions
 ---
-CMSMain:
+SilverStripe\CMS\Controllers\CMSMain:
   extensions:
-    - DisqusCMSActionExtension
-SiteConfig:
+    - Silverstripesk\Disqus\DisqusCMSActionExtension
+SilverStripe\SiteConfig\SiteConfig:
   extensions:
-    - DisqusSiteConfig
+    - Silverstripesk\Disqus\DisqusSiteConfig

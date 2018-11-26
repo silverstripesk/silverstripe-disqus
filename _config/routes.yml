@@ -2,8 +2,6 @@
 Name: disqussync
 After: framework/routes#coreroutes
 ---
-Director:
+SilverStripe\Control\Director:
   rules:
-    'disqussync//$Action/$ID/$Name': 'Disqus_Controller'
-    
-   
+    'disqussync//$Action/$ID/$Name': 'Silverstripesk\Disqus\DisqusController'
