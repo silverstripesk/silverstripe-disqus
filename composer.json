@@ -1,15 +1,17 @@
 {
     "name": "silverstripesk/silverstripe-disqus",
     "description": "Disqus module for SilverStripe CMS http://silverstripe.sk/clanky/disqus/",
-    "type": "silverstripe-module",
+    "type": "silverstripe-vendormodule",
     "keywords": ["silverstripe", "comments", "disqus"],
     "require":
     {
         "php": ">=5.3.2",
-        "silverstripe/framework": "~3.1",
-        "silverstripe/cms": "~3.1"
+        "silverstripe/framework": "^4.0",
+        "silverstripe/cms": "^4.0"
     },
     "extra":{
         "installer-name": "disqus"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
